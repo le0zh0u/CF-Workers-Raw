@@ -35,7 +35,14 @@ export default {
 
 			// 检查请求是否成功 (状态码 200 到 299)
 			if (response.ok) {
-				return new Response(response.body, {
+				let body = await response.text(); // 使用 await 和 response.text() 获取响应的文本内容
+				if(env.REPLACE_REGEX && env.REPLACE_CONTENT) {
+					const replaceRegex = new RegExp(env.REPLACE_REGEX, 'g');
+					const replaceContent = env.REPLACE_CONTENT;
+					body = body.replace(replaceRegex, replaceContent);
+				}
+				
+				return new Response(body, {
 					status: response.status,
 					headers: response.headers
 				});
